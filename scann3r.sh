@@ -23,7 +23,7 @@
 
 # Set some gl0bal variables
 home=$HOME
-work=$home/data
+work=$home/data/results
 phost="$work/live-hosts.txt"
 
 hr="============================================================================"
@@ -281,12 +281,12 @@ case $choice in
         do
             echo "Creating Nmap report for ${myHost}"
             echo $hr
-            mkdir ${work}/${myHost}
-            cd ${work}/${myHost} 
+            mkdir -p ${work}/${myHost}/scans
+            cd ${work}/${myHost}/scans 
                nmap -A --stats-every 10s ${myHost} -oX agressive_scan.xml
                xsltproc agressive_scan.xml -o agressive_scan.html
                rm agressive_scan.xml
-            echo  "Finished! Nmap report at ${work}/${myHost}/agressive_scan.html"
+            echo  "Finished! Nmap report at ${work}/${myHost}/scans/agressive_scan.html"
             echo $hr
         done
      ;;
@@ -297,19 +297,20 @@ case $choice in
      echo "Running Nmap Agressive scan using ${phost}"
      # create an array of hosts from file
      declare -a myHosts
-     readarray myHosts < ${phost}
+     readarray -t myHosts < ${phost}
      #echo ${myHosts[@]} -for debug
         # loop through each host run agressive scan
         for myHost in "${myHosts[@]}";
         do
             echo "Creating Nmap report for ${myHost}"
             echo $hr
-            mkdir ${work}/${myHost}
-            cd ${work}/${myHost}
+            mkdir -p ${work}/${myHost}/scans
+	    echo "Changing Directory to ${work}/${myHost}/scans"
+            cd ${work}/${myHost}/scans
                nmap -A --stats-every 10s ${myHost} -oX agressive_scan.xml
                xsltproc agressive_scan.xml -o agressive_scan.html
                rm agressive_scan.xml
-            echo  "Finished! Nmap report at ${work}/${myHost}/agressive_scan.html"
+            echo  "Finished! Nmap report at ${work}/${myHost}/scans/agressive_scan.html"
             echo $hr
         done
      ;;
@@ -326,7 +327,7 @@ case $choice in
      fi
 
      echo
-     echo "Running an Nmap ping sweep for live hosts using manual entries."
+     echo "Running an Nmap Agressive Scan for live hosts using manual entries."
      # create an array of hosts from entries
      declare -a myHosts=(${manual})
      #echo ${myHosts[@]} -for debug
@@ -335,12 +336,12 @@ case $choice in
         do
             echo "Creating Nmap report for ${myHost}"
             echo $hr
-            mkdir ${work}/${myHost}
-            cd ${work}/${myHost}
+            mkdir -p ${work}/${myHost}/scans
+            cd ${work}/${myHost}/scans
                nmap -A --stats-every 10s ${myHost} -oX agressive_scan.xml
                xsltproc agressive_scan.xml -o agressive_scan.html
                rm agressive_scan.xml
-            echo  "Finished! Nmap report at ${work}/${myHost}/agressive_scan.html"
+            echo  "Finished! Nmap report at ${work}/${myHost}/scans/agressive_scan.html"
             echo $hr
         done
      ;;
